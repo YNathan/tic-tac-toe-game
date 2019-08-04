@@ -61,18 +61,17 @@ export class TableComponent implements OnInit {
     }
   }
 
-  cellClicked(cell_num: number,cell_player){
-    if(cell_player.length === 0){
-      console.log(cell_num);
-      for(let i = 0; i < this.GameSteps.length; i++){
-        if(this.GameSteps[i].first === 0){
+  cellClicked(cell_num: number, cell_player) {
+    if (cell_player.length === 0) {
+      for (let i = 0; i < this.GameSteps.length; i++) {
+        if (this.GameSteps[i].first === 0) {
           this.GameSteps[i].first = cell_num;
-          this.cells[cell_num].player = "first";
+          this.cells[cell_num - 1].player = "first";
           break;
-        }else if(this.GameSteps[i].second === 0){
-          this.cells[cell_num].player = "second";
+        } else if (this.GameSteps[i].second === 0) {
+          this.cells[cell_num - 1].player = "second";
           this.GameSteps[i].second = cell_num;
-          let param = ':'+(i+1) +'f'+this.GameSteps[i].first+'s'+this.GameSteps[i].second; 
+          let param = ':' + (i + 1) + 'f' + this.GameSteps[i].first + 's' + this.GameSteps[i].second;
           let oldUrlPlusNewStepParam = this.router.url + param;
           this.router.navigateByUrl(oldUrlPlusNewStepParam);
           break;

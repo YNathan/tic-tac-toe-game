@@ -1,0 +1,15 @@
+.container-categories-section{
+    margin: 0 auto;
+    border: 1px solid #000;
+    display: grid;
+    font-size: 50px;
+    background-color: #666;
+    grid-gap: 1px;
+} 
+.category-section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    cursor: pointer;
+}

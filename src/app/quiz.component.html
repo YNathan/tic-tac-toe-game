@@ -1,0 +1,17 @@
+<mat-horizontal-stepper [linear]="true" #stepper>
+  <ng-container *ngFor="let question of questions; let i = index" [attr.data-index]="i">
+    <mat-step>
+      <app-table-quiz [question]="question" [questionNumber]="i" (emitNextQuestion)="nextQuestion($event,stepper)">
+      </app-table-quiz>
+    </mat-step>
+  </ng-container>
+</mat-horizontal-stepper>
+
+<div style="text-align:center; z-index:  130 !important;">
+  <ng-container *ngFor="let question of questions; let i = index">
+    <span
+      [ngClass]="{ 'dot-selected' : ((this.quizScoreResults[i -1] !== undefined) || i=== 0), 'dot-unselected':!((this.quizScoreResults[i -1 ] !== undefined) || i=== 0)}"
+      (click)="move(i)"></span>
+  </ng-container>
+
+</div>

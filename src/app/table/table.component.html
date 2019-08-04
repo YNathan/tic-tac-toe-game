@@ -1,0 +1,5 @@
+<div class="container-categories-section" text-align="center" [ngStyle]="gridStyle">
+  <ng-container *ngFor="let item of cells; let i = index" [attr.data-index]="i" >
+    <app-cell [cellNumber]="item.cell_num" [iconUrl]="item.player == 'first' ? '/assets/x.svg' : item.player == 'second' ? '/assets/y.svg' : '' " class="category-section" (click)="cellClicked(item.cell_num,item.player)"></app-cell>
+  </ng-container>
+</div>

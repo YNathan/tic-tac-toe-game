@@ -1,0 +1,10 @@
+<div class="input-dimension-section">
+    <mat-form-field>
+        <mat-select placeholder="dimension options" [disableOptionCentering]="false" [(value)]="dimensionSelected">
+            <mat-option *ngFor="let dimension of dimensionOps" [value]="dimension">
+                {{dimension | jacksSqrtPipe: 'dosnotmatter'}} X {{dimension | jacksSqrtPipe: 'dosnotmatter'}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<app-table [dimension]="dimensionSelected" [steps]="steps"></app-table>

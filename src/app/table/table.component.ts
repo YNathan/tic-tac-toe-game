@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { first } from 'rxjs/operators';
+import { dirtyParentQueries } from '@angular/core/src/view/query';
 
 @Component({
   selector: 'app-table',
@@ -9,20 +9,28 @@ import { first } from 'rxjs/operators';
 })
 export class TableComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute, private router: Router) { }
-
+  constructor(private router: Router) { }
+  // The array that will contain the steps of the game each step has two plays
   GameSteps = [];
+  // The cells array that containe a list that will generated the params from the player behavior
   cells = [];
-  poisitioningTxt: String;
+  // the dimansion of the play bord get his input from the input dimension
   _dimension: number;
+  // will used to generate the size of the board style as binding params
   boxSizeStyle = "";
   boardWidth: number = 0;
   gridStyle: any;
+  winner: string = "";
 
   @Input() steps: any;
   @Input() set dimension(value: number) {
-    // updating the url
+
+
     this.router.navigateByUrl(this.router.url.replace(this.router.url.split('dimension=')[1].split('&')[0], value.toString()));
+    if (this.GameSteps.length) {
+      // its mean that i change the size of the game dimension and not a copy past url because the game.length hase a size
+      this.router.navigateByUrl(this.router.url.split('dimension=')[0] += 'dimension=' + value.toString() + '&steps=');
+    }
     // initilizing the game step array will contain wich cell the first play and what the second play
     this.GameSteps = [];
     // the dimension
@@ -48,27 +56,38 @@ export class TableComponent implements OnInit {
     this.fromUrlStep();
   }
 
-  fromUrlStep() {
-    let stepsArray = this.steps.split(':');
-    for (let stp of stepsArray) {
-      this.poisitioningTxt = stp.substring(1, stp.length)
-      let stepNumber = parseInt(stp[0]) - 1;
-      let first = parseInt(this.poisitioningTxt.split('s')[0].split('f')[1]);
-      let second = parseInt(this.poisitioningTxt.split('s')[1]);
-      this.cells[first - 1].player = 'first';
-      this.cells[second - 1].player = 'second';
-      this.GameSteps[stepNumber] = { 'first': first, 'second': second };
+  // parsing the steps from the url to the component
+  fromUrlStep(): void {
+    // that we do have step and is not a new game
+    if (this.steps.length) {
+      // split the structure divide the steps by :
+      let stepsArray = this.steps.split(':');
+      // looping over steps
+      for (let stp of stepsArray) {
+        // i case that was'nt parsed correctly and one step is broken
+        if (stp.length) {
+          let stepNumber = parseInt(stp[0]) - 1;
+          let first = parseInt(stp.substring(1, stp.length).split('s')[0].split('f')[1]);
+          let second = parseInt(stp.substring(1, stp.length).split('s')[1]);
+          this.cells[first - 1].player = 'first';
+          this.cells[second - 1].player = 'second';
+          this.GameSteps[stepNumber] = { 'first': first, 'second': second };
+        }
+      }
     }
   }
 
   cellClicked(cell_num: number, cell_player) {
+    let player = "";
     if (cell_player.length === 0) {
       for (let i = 0; i < this.GameSteps.length; i++) {
         if (this.GameSteps[i].first === 0) {
           this.GameSteps[i].first = cell_num;
+          player = "first";
           this.cells[cell_num - 1].player = "first";
           break;
         } else if (this.GameSteps[i].second === 0) {
+          player = "second";
           this.cells[cell_num - 1].player = "second";
           this.GameSteps[i].second = cell_num;
           let param = ':' + (i + 1) + 'f' + this.GameSteps[i].first + 's' + this.GameSteps[i].second;
@@ -77,6 +96,7 @@ export class TableComponent implements OnInit {
           break;
         }
       }
+      this.doesHeWin(cell_num, player);
     }
 
   }
@@ -92,5 +112,59 @@ export class TableComponent implements OnInit {
       'grid-template-rows': this.boxSizeStyle,
       'grid-template-columns': this.boxSizeStyle,
     }
+  }
+
+  doesHeWin(cell: number, player: string) {
+    let jumper = Math.sqrt(this._dimension);
+    if (this.verticalMatch(cell, jumper, player) || this.horizontalMatch(cell, jumper, player) || this.slantLeftToRight(cell, jumper, player) || this.slantRightToLeft(cell, jumper, player)) {
+      console.log("he win");
+    }
+  }
+  verticalMatch(cell: number, jumper: number, player: string): boolean {
+    let playerWin = true;
+    let startIdx = (cell % jumper);
+
+    for (let i = startIdx; i < this.cells.length; i += jumper) {
+          if (this.cells[i - 1].player !== player) {
+            playerWin = false;
+            break;
+      }
+    }
+    return playerWin;
+  }
+  horizontalMatch(cell: number, jumper: number, player: string): boolean {
+    let playerWin = true;
+    let startIdx = (cell - (cell % jumper)) + 1;
+    let endIndex = startIdx + jumper;
+
+    for (let i = startIdx; i <= endIndex; i++) {
+      if (this.cells[i].player !== player) {
+        playerWin = false;
+        break;
+      }
+    }
+    return playerWin;
+  }
+  slantRightToLeft(cell: number, jumper: number, player: string): boolean {
+    let playerWin = true;
+    let startIdx = jumper;
+    let endIndex = (jumper * jumper) - jumper;
+    for(let i = startIdx; i < this.cells.length; i += (jumper -1)){
+      if (this.cells[i - 1].player !== player) {
+        playerWin = false;
+        break;
+      }
+    }
+    return playerWin;
+  }
+  slantLeftToRight(cell: number, jumper: number, player: string): boolean {
+    let playerWin = true;
+    for(let i = 0; i < this.cells.length; i += (jumper +1)){
+      if (this.cells[i - 1].player !== player) {
+        playerWin = false;
+        break;
+      }
+    }
+    return playerWin;
   }
 }

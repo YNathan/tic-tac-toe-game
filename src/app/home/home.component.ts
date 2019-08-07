@@ -23,13 +23,13 @@ export class HomeComponent implements OnInit {
         this.dimensionSelected = parseInt(dim);
 
       }else{
-        this.router.navigateByUrl(this.router.url.replace(this.router.url.split('home')[0], 'home?dimension=9'));
+        this.router.navigateByUrl('/home?dimension=9&steps=');
       }
       if (x.hasOwnProperty('steps')) {
 
         this.steps = x['steps'];
       }else{
-        this.router.navigateByUrl(this.router.url.replace(this.router.url.split('home')[0], 'home?dimension=9&steps='));
+        this.router.navigateByUrl('/home?dimension=9&steps=');
       }
       if (this.dimensionSelected == 0) {
         this.dimensionSelected = this.dimensionOps[0];
@@ -41,6 +41,13 @@ export class HomeComponent implements OnInit {
   whenPlayerWin(evt){
     this.playerWinner = evt;
     console.log(this.playerWinner)
+  }
+
+  playerWinClick(){
+    this.playerWinner = '';
+    console.log(this.router.url.split('home'));
+    console.log(this.router.url.split('home')[0]);
+     this.router.navigateByUrl('/home?dimension=9&steps=');
   }
 
 

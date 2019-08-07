@@ -10,6 +10,6 @@
 </div>
 <app-table (playerWin)="whenPlayerWin($event)" [dimension]="dimensionSelected" [steps]="steps"></app-table>
 </section>
-<div  *ngIf="playerWinner" class="winner-section">
+<div  *ngIf="playerWinner" class="winner-section" (click)="playerWinClick()">
     <p>the winner is {{playerWinner}} player</p>
 </div>

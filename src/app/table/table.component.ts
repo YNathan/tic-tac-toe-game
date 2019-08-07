@@ -28,7 +28,6 @@ export class TableComponent implements OnInit {
   @Input() steps: any;
   @Input() set dimension(value: number) {
     // when a new dimension size change we need to take of the old steps, its a new game
-    this.router.navigateByUrl(this.router.url.replace(this.router.url.split('dimension=')[1].split('&')[0], value.toString()));
     if (this.GameSteps.length) {
       // its mean that i change the size of the game dimension and not a copy past url because the game.length hase a size
       this.router.navigateByUrl(this.router.url.split('dimension=')[0] += 'dimension=' + value.toString() + '&steps=');

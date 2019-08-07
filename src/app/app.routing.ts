@@ -5,7 +5,6 @@ import { HomeComponent } from './home/home.component';
 
 const appRoutes: Routes = [
     { path: 'home', component: HomeComponent }, 
-    { path: 'table', component: TableComponent }, 
     // otherwise redirect to home
     { path: '**', redirectTo: 'home' }
 ];

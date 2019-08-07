@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute,Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -9,11 +9,12 @@ import { first } from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute) { }
   dimensionOps = [9, 16, 25, 36, 49, 64, 81, 100];
   dimensionSelected = this.dimensionOps[0];
   dimension = 0;
   steps: any;
+  playerWinner: string = '';
+  constructor(private route: ActivatedRoute,private router: Router) { }
 
   ngOnInit(): void {
     this.route.queryParams.pipe(first()).subscribe(x => {
@@ -21,10 +22,14 @@ export class HomeComponent implements OnInit {
         let dim = x['dimension'];
         this.dimensionSelected = parseInt(dim);
 
+      }else{
+        this.router.navigateByUrl(this.router.url.replace(this.router.url.split('home')[0], 'home?dimension=9'));
       }
       if (x.hasOwnProperty('steps')) {
 
         this.steps = x['steps'];
+      }else{
+        this.router.navigateByUrl(this.router.url.replace(this.router.url.split('home')[0], 'home?dimension=9&steps='));
       }
       if (this.dimensionSelected == 0) {
         this.dimensionSelected = this.dimensionOps[0];
@@ -33,7 +38,10 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  
+  whenPlayerWin(evt){
+    this.playerWinner = evt;
+    console.log(this.playerWinner)
+  }
 
 
 }

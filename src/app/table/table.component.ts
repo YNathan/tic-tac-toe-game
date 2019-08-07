@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input,Output,EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { dirtyParentQueries } from '@angular/core/src/view/query';
 
@@ -20,12 +20,14 @@ export class TableComponent implements OnInit {
   boxSizeStyle = "";
   boardWidth: number = 0;
   gridStyle: any;
+  fillColorAt : number[] = [];
   winner: string = "";
 
+  @Output() playerWin = new EventEmitter<String>();
+  // the input params
   @Input() steps: any;
   @Input() set dimension(value: number) {
-
-
+    // when a new dimension size change we need to take of the old steps, its a new game
     this.router.navigateByUrl(this.router.url.replace(this.router.url.split('dimension=')[1].split('&')[0], value.toString()));
     if (this.GameSteps.length) {
       // its mean that i change the size of the game dimension and not a copy past url because the game.length hase a size
@@ -42,7 +44,7 @@ export class TableComponent implements OnInit {
     this.cells = [];
     // initilizing the cells
     for (let i = 1; i <= this._dimension; i++) {
-      this.cells.push({ cell_num: i, player: "" });
+      this.cells.push({ cell_num: i, player: "",cell_color: 'white' });
     }
     // initilizing thg game step *The max game steps is a half of the cells amount
     for (let i = 1; i <= this._dimension / 2; i++) {
@@ -50,6 +52,8 @@ export class TableComponent implements OnInit {
     }
     this.generateBoxSizeCss();
   }
+
+  
 
 
   ngOnInit() {
@@ -117,42 +121,68 @@ export class TableComponent implements OnInit {
   doesHeWin(cell: number, player: string) {
     let jumper = Math.sqrt(this._dimension);
     if (this.verticalMatch(cell, jumper, player) || this.horizontalMatch(cell, jumper, player) || this.slantLeftToRight(cell, jumper, player) || this.slantRightToLeft(cell, jumper, player)) {
-      console.log("he win");
+      this.playerWin.emit(player);
     }
   }
   verticalMatch(cell: number, jumper: number, player: string): boolean {
+    
     let playerWin = true;
-    let startIdx = (cell % jumper);
 
+    let startIdx = (cell - 1) % jumper;
+   
     for (let i = startIdx; i < this.cells.length; i += jumper) {
-          if (this.cells[i - 1].player !== player) {
+          if (this.cells[i].player !== player) {
             playerWin = false;
+            this.fillColorAt = [];
             break;
+         }else{
+            this.fillColorAt.push(i);
+         }
+    }
+    if(playerWin){
+      for(let i of this.fillColorAt){
+        this.cells[i]['cell_color'] = 'salmon';
       }
     }
     return playerWin;
   }
   horizontalMatch(cell: number, jumper: number, player: string): boolean {
     let playerWin = true;
-    let startIdx = (cell - (cell % jumper)) + 1;
+    let startIdx = Math.floor((cell - 1)/ jumper ) * jumper; 
     let endIndex = startIdx + jumper;
 
-    for (let i = startIdx; i <= endIndex; i++) {
+    for (let i = startIdx; i < endIndex; i++) {
       if (this.cells[i].player !== player) {
         playerWin = false;
+        this.fillColorAt = [];
         break;
+      }else{
+        this.fillColorAt.push(i);
+      }
+    }
+    if(playerWin){
+      for(let i of this.fillColorAt){
+        this.cells[i]['cell_color'] = 'salmon';
       }
     }
     return playerWin;
   }
   slantRightToLeft(cell: number, jumper: number, player: string): boolean {
     let playerWin = true;
-    let startIdx = jumper;
+    let startIdx = jumper - 1;
     let endIndex = (jumper * jumper) - jumper;
-    for(let i = startIdx; i < this.cells.length; i += (jumper -1)){
-      if (this.cells[i - 1].player !== player) {
+    for(let i = startIdx; i < this.cells.length -1; i += (jumper -1)){
+      if (this.cells[i].player !== player) {
         playerWin = false;
+        this.fillColorAt = [];
         break;
+      }else{
+        this.fillColorAt.push(i);
+      }
+    }
+    if(playerWin){
+      for(let i of this.fillColorAt){
+        this.cells[i]['cell_color'] = 'salmon';
       }
     }
     return playerWin;
@@ -160,9 +190,17 @@ export class TableComponent implements OnInit {
   slantLeftToRight(cell: number, jumper: number, player: string): boolean {
     let playerWin = true;
     for(let i = 0; i < this.cells.length; i += (jumper +1)){
-      if (this.cells[i - 1].player !== player) {
+      if (this.cells[i].player !== player) {
         playerWin = false;
+        this.fillColorAt = [];
         break;
+      }else{
+        this.fillColorAt.push(i);
+      }
+    }
+    if(playerWin){
+      for(let i of this.fillColorAt){
+        this.cells[i]['cell_color'] = 'salmon';
       }
     }
     return playerWin;

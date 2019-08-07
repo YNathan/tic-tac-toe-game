@@ -9,7 +9,8 @@ export class CellComponent implements OnInit {
 
   @Input() cellNumber : number;
   @Input() iconUrl: String;
-  constructor() { }
+  constructor() { 
+  }
 
 
   ngOnInit() {

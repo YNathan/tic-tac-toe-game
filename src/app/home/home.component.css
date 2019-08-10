@@ -5,7 +5,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #000;
+  background-color: #fff;
 }
 
 
@@ -16,7 +16,7 @@ p {
   font-size: 2em;
   letter-spacing: 4px;
   overflow: hidden;
-  background: linear-gradient(90deg, #000, #fff, #000);
+  background: linear-gradient(90deg, #fff, #000, #fff);
   background-repeat: no-repeat;
   background-size: 80%;
   animation: animate 3s linear infinite;

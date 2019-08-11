@@ -32,3 +32,16 @@ p {
     background-position: 500%;
   }
 }
+
+
+
+.chose-icon-section {
+  width: 100%;
+  padding: 0;
+
+  display: flex;
+  justify-content: space-between;
+}
+.chose-icon-section > .chose-icon-selection {
+  list-style: none;
+}

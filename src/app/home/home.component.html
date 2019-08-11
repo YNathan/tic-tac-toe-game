@@ -1,15 +1,41 @@
 <section *ngIf="!playerWinner">
-<div class="input-dimension-section">
-    <mat-form-field>
-        <mat-select placeholder="dimension options" [disableOptionCentering]="false" [(value)]="dimensionSelected">
-            <mat-option *ngFor="let dimension of dimensionOps" [value]="dimension">
-                {{dimension | jacksSqrtPipe: 'dosnotmatter'}} X {{dimension | jacksSqrtPipe: 'dosnotmatter'}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-</div>
-<app-table (playerWin)="whenPlayerWin($event)" [dimension]="dimensionSelected" [steps]="steps"></app-table>
+    <div class="input-dimension-section">
+        <mat-form-field>
+            <mat-select placeholder="dimension options" [disableOptionCentering]="false" [(value)]="dimensionSelected">
+                <mat-option *ngFor="let dimension of dimensionOps" [value]="dimension">
+                    {{dimension | jacksSqrtPipe: 'dosnotmatter'}} X {{dimension | jacksSqrtPipe: 'dosnotmatter'}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <app-table (playerWin)="whenPlayerWin($event)" [dimension]="dimensionSelected"
+        [firstPlayerIconUrl]="firstPlayerIconUrl" [secondPlayerIconUrl]="secondPlayerIconUrl" [steps]="steps">
+    </app-table>
+
+    <div class="chose-icon-section">
+        <div class="chose-icon-selection">
+            <mat-form-field>
+                <mat-select placeholder="first player icons options" [disableOptionCentering]="false"
+                    [(value)]="firstPlayerIconUrl">
+                    <mat-option *ngFor="let iconUrl of IconesUrlsList" [value]="iconUrl">
+                        <mat-icon svgIcon={{iconUrl}}></mat-icon>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="chose-icon-selection">
+            <mat-form-field>
+                <mat-select placeholder="second player icons options" [disableOptionCentering]="false"
+                    [(value)]="secondPlayerIconUrl">
+                    <mat-option *ngFor="let iconUrl of IconesUrlsList" [value]="iconUrl">
+                        <mat-icon svgIcon={{iconUrl}}></mat-icon>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+
 </section>
-<div  *ngIf="playerWinner" class="winner-section" (click)="playerWinClick()">
+<div *ngIf="playerWinner" class="winner-section" (click)="playerWinClick()">
     <p>the winner is {{playerWinner}} player</p>
 </div>

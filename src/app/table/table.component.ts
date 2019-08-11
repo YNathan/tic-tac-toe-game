@@ -25,6 +25,9 @@ export class TableComponent implements OnInit {
 
   @Output() playerWin = new EventEmitter<String>();
   // the input params
+  @Input() firstPlayerIconUrl: string;
+  @Input() secondPlayerIconUrl: string;
+  
   @Input() steps: any;
   @Input() set dimension(value: number) {
     // when a new dimension size change we need to take of the old steps, its a new game
